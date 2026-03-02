@@ -1,30 +1,27 @@
-import { Button } from '@/components/ui/Button';
+import { useUsers } from "../hooks/useUsers";
+import { Button } from "@/components/ui/Button";
 
 export const UserPage = () => {
+  const { data: users, isLoading, isError, refetch } = useUsers();
+
+  if (isLoading) return <div className="p-10 text-center">Cargando usuarios...</div>;
+  if (isError) return <div className="text-red-500">Error al cargar datos.</div>;
+
   return (
     <div className="space-y-6">
-      {/* Header de la Sección */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b pb-6">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight text-slate-900">Usuarios</h2>
-          <p className="text-slate-500">Administra los usuarios y sus permisos desde aquí.</p>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="outline">Exportar</Button>
-          <Button>+ Nuevo Usuario</Button>
-        </div>
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold">Usuarios (API Real)</h2>
+        <Button onClick={() => refetch()}>Refrescar</Button>
       </div>
 
-      {/* Placeholder de Contenido */}
-      <div className="rounded-xl border border-dashed border-slate-300 bg-white p-20">
-        <div className="flex flex-col items-center justify-center text-center">
-          <div className="h-12 w-12 rounded-full bg-slate-100 mb-4 flex items-center justify-center text-slate-400">
-            👥
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {users?.map((user) => (
+          <div key={user.id} className="p-4 border rounded-lg bg-white shadow-sm">
+            <p className="font-bold text-primary">{user.name}</p>
+            <p className="text-sm text-muted-foreground">{user.email}</p>
+            <p className="text-xs mt-2 italic">@{user.username}</p>
           </div>
-          <h3 className="text-lg font-semibold text-slate-900">No hay usuarios cargados</h3>
-          <p className="text-sm text-slate-500 mb-6">Empieza por conectar una API o agregar uno manualmente.</p>
-          <Button variant="outline" size="sm">Más información</Button>
-        </div>
+        ))}
       </div>
     </div>
   );
